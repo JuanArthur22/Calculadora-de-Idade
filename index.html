@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./src/images/favicon-32x32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/css/index.css" />
+  <title>Age calculator app</title>
+</head>
+<body>
+  <main id="app">
+    <form onsubmit="ageForm(event)">
+      <div class="input-form">
+        <div class="input">
+          <label for="day">Day</label>
+          <input type="number" name="day" id="day" placeholder="DD" min="1" max="31">
+          <span class="field-required hide">This field is required</span>
+          <span class="valid-info hide">Must be a valid day</span>
+        </div>
+
+        <div class="input">
+          <label for="month">Month</label>
+          <input type="number" name="month" id="month" placeholder="MM" min="1" max="12">
+          <span class="field-required hide">This field is required</span>
+          <span class="valid-info hide">Must be a valid month</span>
+        </div>
+
+        <div class="input">
+          <label for="year">Year</label>
+          <input type="number" name="year" id="year" placeholder="YYYY" min="1900" max="2025">
+          <span class="field-required hide">This field is required</span>
+          <span class="valid-info hide">Must be in the past</span>
+        </div>
+      </div>
+
+      <div class="register">
+        <div class="thin-line"></div>
+        <button type="submit">
+          <img src="src/img/icon-arrow.svg" alt="">
+        </button>
+      </div>
+    </form>
+
+    <div class="age-information">
+      <p><span class="year">--</span> years</p>
+      <p><span class="month">--</span> months</p>
+      <p><span class="day">--</span> days</p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('app').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const day = document.getElementById('day');
+      const month = document.getElementById('month');
+      const year = document.getElementById('year');
+
+      const dayValue = day.value;
+      const monthValue = month.value;
+      const yearValue = year.value;
+
+      let valid = true;
+
+      document.querySelectorAll('.field-required, .valid-info').forEach(span => span.classList.add('hide'));
+
+      if (!dayValue) {
+        day.nextElementSibling.classList.remove('hide');
+        valid = false;
+      } else if (dayValue < 1 || dayValue > 31) {
+        day.nextElementSibling.nextElementSibling.classList.remove('hide');
+        valid = false;
+      }
+
+      if (!monthValue) {
+        month.nextElementSibling.classList.remove('hide');
+        valid = false;
+      } else if (monthValue < 1 || monthValue > 12) {
+        month.nextElementSibling.nextElementSibling.classList.remove('hide');
+        valid = false;
+      }
+
+      if (!yearValue) {
+        year.nextElementSibling.classList.remove('hide');
+        valid = false;
+      } else if (yearValue > new Date().getFullYear()) {
+        year.nextElementSibling.nextElementSibling.classList.remove('hide');
+        valid = false;
+      }
+      if (valid) {
+
+        const birthDate = new Date(yearValue, monthValue - 1, dayValue); // Lembre-se que o mês começa de 0
+        const currentDate = new Date();
+  
+        let age = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+        const dayDifference = currentDate.getDate() - birthDate.getDate();
+
+        if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+        age--;
+               }
+
+        const months = monthDifference < 0 ? 12 + monthDifference : monthDifference;
+        const days = dayDifference < 0 ? new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate() + dayDifference : dayDifference;
+
+ 
+        document.querySelector('.year').textContent = age;
+        document.querySelector('.month').textContent = months;
+        document.querySelector('.day').textContent = days;
+}
+
+    });
+  </script>
+</body>
+</html>
